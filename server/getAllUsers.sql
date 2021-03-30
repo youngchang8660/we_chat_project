@@ -1,1 +1,0 @@
-SELECT * FROM we_chat_user;

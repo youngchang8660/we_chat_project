@@ -24,24 +24,12 @@ app.get("/user", async(req, res) => {
 })
 
 // user registration
-app.post("/user/registration", async(req, res) => {
-    try {
-        const { first_name, last_name, email, password, confirm_password } = req.body;
-        const emailCheck = await pool.query("SELECT * FROM we_chat_user WHERE email = $1;");
-        if(emailCheck[0]) {
-            return res.send(400).send("Email is already in use");
-        } 
-        if(password == confirm_password) {
-            const salt = bcrypt.genSaltSync(10);
-            const hash = bcrypt.hashSync(password, salt);
-            let registeredUser = await pool.query("INSERT INTO we_chat_user (first_name, last_name, email, password, confirm_password) values($1, $2, $3, $4, $5) returning first_name, last_name, email;");
-            
-        }
-        else {
-            return res.send(400).send("Password does not match");
-        }
-    } catch(err) {
-        console.error('Error to register new User', err.message)
+app.post('/user/register', async(req, res) => {
+    let { first_name, last_name, email, password, confirm_password } = req.body;
+    console.log(first_name, last_name, email, password, confirm_password)
+
+    if(!first_name || !last_name || !email || !password || !confirm_password) {
+        res.send('Please fill out all information')
     }
 })
 
