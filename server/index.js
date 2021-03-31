@@ -2,14 +2,21 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { SERVER_PORT } = process.env;
+const { SERVER_PORT, SESSION_SECRET } = process.env;
 const port = SERVER_PORT || 3007;
 const pool = require("./db");
 const bcrypt = require('bcryptjs');
-const saltRounds = 10;
+const session = require('express-session');
+
 
 app.use(cors());
 app.use(express.json());
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {maxAge: 1000 * 60 * 60}
+}))
 
 /******************* User *************************/
 
@@ -25,12 +32,29 @@ app.get("/user", async(req, res) => {
 
 // user registration
 app.post('/user/register', async(req, res) => {
-    let { first_name, last_name, email, password, confirm_password } = req.body;
-    console.log(first_name, last_name, email, password, confirm_password)
+    let { firstName, lastName, email, password, confirmPassword } = req.body;
 
-    if(!first_name || !last_name || !email || !password || !confirm_password) {
-        res.send('Please fill out all information')
+    if(!firstName || !lastName || !email || !password || !confirmPassword) {
+        return res.status(400).send('All fields re required');
     }
+
+    if(password !== confirmPassword) {
+        return res.status(400).send('Password does not match')
+    }
+
+    let checkUserInUse = await pool.query(`SELECT * FROM we_chat_user WHERE email = '${email}';`);
+    // console.log(checkUserInUse['rows'].length)
+    if(checkUserInUse['rows'].length > 0) {
+        return res.status(400).send('Email is already taken');
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+    let registeredUser = await pool.query(`INSERT INTO we_chat_user (first_name, last_name, email, password, confirm_password) 
+                VALUES ('${firstName}', '${lastName}', '${email}', '${hash}', '${hash}') RETURNING first_name, last_name, email;`);
+
+    return res.status(201).send(registeredUser);
+
 })
 
 app.listen(port, () => {

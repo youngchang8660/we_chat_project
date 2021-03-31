@@ -5,6 +5,7 @@ import Login from './Components/Login';
 import Register from './Components/Register'
 
 function App() {
+  localStorage.setItem('servername', 'http://localhost:3943')
   return (
     <Router>
       <Switch>
