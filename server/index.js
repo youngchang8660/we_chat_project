@@ -52,10 +52,18 @@ app.post('/user/register', async(req, res) => {
     const hash = bcrypt.hashSync(password, salt);
     let registeredUser = await pool.query(`INSERT INTO we_chat_user (first_name, last_name, email, password, confirm_password) 
                 VALUES ('${firstName}', '${lastName}', '${email}', '${hash}', '${hash}') RETURNING first_name, last_name, email;`);
+    
+    // console.log(registeredUser['rows'])
+    let sessionUser = {...registeredUser['rows']}
+    console.log('sessionUser', sessionUser)
+    req.session.user = sessionUser
+    console.log('req.session.user', req.session.user)
 
-    return res.status(201).send(registeredUser);
-
+    return res.status(201).send(req.session.user);
 })
+
+// user login
+
 
 app.listen(port, () => {
   console.log(`This app is running on port ${port}`);

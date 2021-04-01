@@ -31,8 +31,17 @@ class Register extends React.Component<
   registerNewUser() {
     console.log('clicked')
     let { firstName, lastName, email, password, confirmPassword } = this.state;
+
+    if(!firstName || !lastName || !email || !password || !confirmPassword) {
+      return alert('Please fill all necessary fields');
+    }
+    else if(password !== confirmPassword) {
+      return alert('Password does not match');
+    }
+
     axios.post(`${servername}/user/register/`, {firstName, lastName, email, password, confirmPassword})
       .then(() => {
+        alert('Successfully signed up! Please log in now')
         this.props.history.push('/login')
       })
       .catch(err => {
