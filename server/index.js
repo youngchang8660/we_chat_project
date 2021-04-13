@@ -35,7 +35,7 @@ app.post('/user/register', async(req, res) => {
     let { firstName, lastName, email, password, confirmPassword } = req.body;
 
     if(!firstName || !lastName || !email || !password || !confirmPassword) {
-        return res.status(400).send('All fields re required');
+        return res.status(400).send('All fields are required');
     }
 
     if(password !== confirmPassword) {
@@ -63,7 +63,27 @@ app.post('/user/register', async(req, res) => {
 })
 
 // user login
+app.post('/user/login', async(req, res) => {
+    let { email, password } = req.body;
+    console.log(email, password)
+    let validEmail = await pool.query(`SELECT * FROM we_chat_user WHERE email = '${email}';`);
+    // console.log(validEmail['rows'][0].password)
+    if(!validEmail['rows'][0]) {
+        return res.status(401).send('Incorrect email or password')
+    }
 
+    if(validEmail['rows'][0]) {
+        let validPassword = await bcrypt.compare(password, validEmail['rows'][0].password)
+        if(!validPassword) {
+            return res.status(400).send('Incorrect email or password');
+        }
+        delete validEmail['rows'][0].password;
+        delete validEmail['rows'][0].confirm_password;
+        let sessionUser = {...validEmail['rows'][0]}
+        req.session.user = sessionUser
+        return res.status(200).send(req.session.user)
+    }
+})
 
 app.listen(port, () => {
   console.log(`This app is running on port ${port}`);
