@@ -1,4 +1,5 @@
 import React from "react";
+import SideNav from './SideNav'
 
 class Home extends React.Component<any | any, {
   userName: any,
@@ -28,7 +29,7 @@ class Home extends React.Component<any | any, {
   render() {
     return (
       <div>
-        
+        <SideNav />
       </div>
     )
   }
