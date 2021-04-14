@@ -1,5 +1,36 @@
+/***************** sideNav ************************/
 .sideNavHome {
-    width: 1000px;
-    height: 100%;
-    background-color: black;
+  width: 5%;
+  height: 100vh;
+  background-color: #d0f0c0;
+}
+
+.sideBarIcons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 35%;
+  padding-top: 30px;
+}
+
+.sideBarExitIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: 5%;
+  bottom: 50px;
+  text-align: center;
+}
+
+#sideIcon {
+  font-size: 50px;
+  cursor: pointer;
+  color: white;
+}
+
+#sideIcon:hover {
+    color: black;
 }

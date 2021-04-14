@@ -30,6 +30,7 @@ class Home extends React.Component<any | any, {
     return (
       <div>
         <SideNav />
+        
       </div>
     )
   }
