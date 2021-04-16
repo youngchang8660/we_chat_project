@@ -5,15 +5,20 @@ import SmsIcon from "@material-ui/icons/Sms";
 import ContactsIcon from "@material-ui/icons/Contacts";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { Link } from "react-router-dom";
 
-class SideNav extends React.Component<any | any, {}> {
+class SideNav extends React.Component<any | {}> {
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+        
+    };
+
   }
 
-  componentDidMount() {
-    console.log(this.props);
+  logout() {
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
   }
 
   render() {
@@ -23,11 +28,17 @@ class SideNav extends React.Component<any | any, {}> {
           <div className="sideBarIcons">
             <AccountBoxIcon id="sideIcon" />
             <SmsIcon id="sideIcon" />
-            <ContactsIcon id="sideIcon" />
-            <InstagramIcon id="sideIcon" />
+            <Link to='/contacts'>
+              <ContactsIcon id="sideIcon" />
+            </Link>
+            <Link to='/posts'>
+              <InstagramIcon id="sideIcon" />
+            </Link>
           </div>
           <div className="sideBarExitIcon">
-            <ExitToAppIcon id="sideIcon" />
+            <Link onClick={this.logout} to="/login">
+              <ExitToAppIcon id="sideIcon" onClick={this.logout} />
+            </Link>
           </div>
         </div>
       </div>
